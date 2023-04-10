@@ -35,24 +35,40 @@ def input_new_restaurant(restaurants_dict, restaurant_name = None, restaurant_ra
 
     return restaurants_dict
 
-
-
 def sort_restaurants(restaurants_dict): 
 
     sorted_restaurants = sorted(restaurants_dict)
     for restaurant in sorted_restaurants:
         print(f"{restaurant} is rated at {restaurants_dict[restaurant]}.")
+
+def interactive_restaurant_rating(fileName):
+
+    restaurant_ratings = read_rating_from_file(fileName)
+    
+    while True:
+        print("Would you like to see all restaurant ratings, "
+              + "add a new restaurant and rating, or quit? \n"
+              + "a: See all restaurant ratings \n"
+              + "b: Add a new restaurant and rating \n"
+              + "q: Quit"
+              )
+        decision = input("Please enter your decision: ")
         
+        if decision.lower() == "a":
+            sort_restaurants(restaurant_ratings)
+        elif decision.lower() == "b":
+            restaurant_ratings = input_new_restaurant(restaurant_ratings)
+        elif decision.lower() == "q":
+            break
+        else:
+            print("Invalid input.")
+            continue
 
-restaurants = read_rating_from_file('scores.txt')
 
-updated_restaurants = input_new_restaurant(restaurants)
-sort_restaurants(updated_restaurants)
 
-# In the new function
-# Run read_rating_from_file
-# While true
-# Ask for decision
-# If see all ratings, run sort_restaurants
-# If add new restaurant, run input_new_restaurant
-# If quit, break.
+# restaurants = read_rating_from_file('scores.txt')
+
+# updated_restaurants = input_new_restaurant(restaurants)
+# sort_restaurants(updated_restaurants)
+
+interactive_restaurant_rating('scores.txt')
