@@ -13,8 +13,21 @@ def read_rating_from_file(fileName, inputs=None):
     
     return restaurants_rating_dict
 
+def validate_rating(restaurant_rating):
+        while True:
+            try:
+                restaurant_rating = int(restaurant_rating)
+                if restaurant_rating < 1 or restaurant_rating > 5:
+                    raise Exception("Out of range")
+            except:
+                restaurant_rating = input("Invalid rating. Please enter a number between 1-5: ")
+            else:
+                break
+            
+        return restaurant_rating
 
-def validate_input(restaurant_name, restaurant_rating):
+
+def input_restaurant(restaurant_name, restaurant_rating):
     """Asks user to enter a restaurant name and rating,
     then validates the input.
     """
@@ -24,22 +37,15 @@ def validate_input(restaurant_name, restaurant_rating):
         
         restaurant_rating = input("Please enter the restaurant rating: ")
 
-    while True:
-        try:
-            restaurant_rating = int(restaurant_rating)
-            if restaurant_rating < 1 or restaurant_rating > 5:
-                raise Exception("Out of range")
-        except:
-            restaurant_rating = input("Invalid rating. Please enter a number between 1-5: ")
-        else:
-            break
+    restaurant_rating = validate_rating(restaurant_rating)
+
     return [restaurant_name, restaurant_rating]
 
 
 def input_new_restaurant(restaurants_dict, restaurant_name = None, restaurant_rating = None):
     """Create a new restaurant review and adds that to the restaurant dictionary."""
 
-    [restaurant_name, restaurant_rating] = validate_input(restaurant_name, restaurant_rating)
+    [restaurant_name, restaurant_rating] = input_restaurant(restaurant_name, restaurant_rating)
     restaurants_dict[restaurant_name] = restaurant_rating
 
     return restaurants_dict
@@ -63,19 +69,27 @@ def edit_random_restaurant(restaurants_dict):
 
     restaurant_rating = input(f"Please enter {random_restaurant}'s rating: ")
 
-    while True:
-        try:
-            restaurant_rating = int(restaurant_rating)
-            if restaurant_rating < 1 or restaurant_rating > 5:
-                raise Exception("Out of range")
-        except:
-            restaurant_rating = input("Invalid rating. Please enter a number between 1-5: ")
-        else:
-            break
+    restaurant_rating = validate_rating(restaurant_rating)
 
     restaurants_dict[random_restaurant] = restaurant_rating
 
 
+def update_selected_restaurant(restaurants_dict):
+    """Update selected restaurant's ratings."""
+
+    restaurant_selection = input("\nPlease enter the restaurant "
+                                 + "name you would like to rate: ")
+    
+    while restaurant_selection not in restaurants_dict:
+        restaurant_selection = input("\nInvalid entry. "
+                                     +"Please enter the restaurant "
+                                     + "name you would like to rate: ")
+        
+    restaurant_rating = input(f"\nPlease enter {restaurant_selection}'s rating: ")
+        
+    restaurants_dict[restaurant_selection] = validate_rating(restaurant_rating)
+
+    
 def interactive_restaurant_rating(fileName):
     """An interative dictionary of restaurant ratings.
     """
@@ -88,6 +102,7 @@ def interactive_restaurant_rating(fileName):
               + "a: See all restaurant ratings \n"
               + "b: Add a new restaurant and rating \n"
               + "c: Edit a random restaurant's rating \n"
+              + "d: Update an existing restaurant's rating \n"
               + "q: Quit\n"
               )
         decision = input("Please enter your decision: ")
@@ -98,6 +113,9 @@ def interactive_restaurant_rating(fileName):
             restaurant_ratings = input_new_restaurant(restaurant_ratings)
         elif decision.lower() == "c":
             edit_random_restaurant(restaurant_ratings)
+        elif decision.lower() == "d":
+            sort_restaurants(restaurant_ratings)
+            update_selected_restaurant(restaurant_ratings)
         elif decision.lower() == "q":
             break
         else:
